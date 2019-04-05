@@ -1,0 +1,16 @@
+{
+  "name": "rf-network",
+  "version": "0.0.1",
+  "description": "Classes and functions for handling RF/Microwave data from touchstone files",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsc ./src --watch",
+    "build": "tsc ./src",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jacob Goodwin",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^3.4.1"
+  }
+}
