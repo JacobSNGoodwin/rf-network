@@ -11,6 +11,8 @@
   "author": "Jacob Goodwin",
   "license": "ISC",
   "devDependencies": {
+    "jest": "^24.7.1",
+    "jest-dev-server": "^4.0.0",
     "typescript": "^3.4.1"
   }
 }
