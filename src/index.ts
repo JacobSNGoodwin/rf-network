@@ -1,7 +1,7 @@
 // import { OptionsValues } from './interfaces'
 
 class Network {
-  static loadSparams(event: Event): Promise<string> {
+  static touchStoneToText(event: Event): Promise<string> {
     // check if file exists and create, otherwise throw an error
     const eventTarget = <HTMLInputElement>event.target
     const fileList = eventTarget.files
