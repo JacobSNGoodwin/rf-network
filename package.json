@@ -4,8 +4,8 @@
   "description": "Classes and functions for handling RF/Microwave data from touchstone files",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "tsc ./src --watch",
-    "build": "tsc ./src",
+    "dev": "tsc --watch",
+    "build": "tsc",
     "test": "jest --watch"
   },
   "author": "Jacob Goodwin",
