@@ -1,7 +1,8 @@
+import math from 'mathjs'
+
 interface TouchstoneData {
   nPorts: number | null
-  options: Options
-  data: Array<SParamData> | null
+  data: Array<FreqPoint> | null
 }
 
 interface Options {
@@ -11,30 +12,31 @@ interface Options {
   z0: number
 }
 
-interface SParamData {
+interface FreqPoint {
   freq: number
-  data: Array<number>
+  s: Array<number> // may change to mathjs matrix
 }
+
+type RFNetwork = TouchstoneData & Options
 
 class Network {
   private _touchstoneText: string
-  private _touchstoneData: TouchstoneData
+  private _networkData: RFNetwork
 
   get touchstoneText() {
     return this._touchstoneText
   }
 
-  get options() {
-    return this._touchstoneData.options
-  }
+  // get options() {
+  //   return this._touchstoneData.options
+  // }
 
   constructor(touchstoneText: string) {
     this._touchstoneText = touchstoneText
-    this._touchstoneData = this.parseTouchstoneText(touchstoneText)
+    this._networkData = this.parseTouchstoneText(touchstoneText)
   }
 
-  private parseTouchstoneText(text: string): TouchstoneData {
-    let data = null
+  private parseTouchstoneText(text: string): RFNetwork {
     let nPorts = null
 
     // get text line-by-line
@@ -69,11 +71,12 @@ class Network {
     }
 
     const options = this.parseOptions(textArray[optionsIndex])
+    const data = this.parseData(textArray.slice(dataIndex))
 
+    // return final object of type RFNetwork, need to spread inner data to do so
     return {
-      nPorts,
-      options,
-      data
+      ...data,
+      ...options
     }
   }
 
@@ -123,6 +126,30 @@ class Network {
     }
 
     return options
+  }
+
+  private parseData(dataLines: string[]): TouchstoneData {
+    const line1 = dataLines[0].trim()
+    const line2 = dataLines[2].trim()
+    // split by any number of white space
+    const splitter = new RegExp('\\s+')
+    const length1 = line1.split(splitter).length
+    const length2 = line2.split(splitter).length
+
+    let nPorts: number
+    if (length1 === 9 && length2 === 9) {
+      // because touchstone spec is annoying for two ports
+      nPorts = 2
+    } else {
+      nPorts = (length1 - 1) / 2
+    }
+
+    console.log(nPorts)
+    // temporary return value
+    return {
+      nPorts,
+      data: [{ freq: 500, s: [] }]
+    }
   }
 }
 
