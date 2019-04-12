@@ -1,9 +1,13 @@
 interface TouchstoneData {
+  options: Options
+  data: Array<SParamData>
+}
+
+interface Options {
   freqUnit: string
   paramType: string
   format: string
   z0: number
-  data: Array<SParamData>
 }
 
 interface SParamData {
@@ -19,8 +23,8 @@ class Network {
     return this._touchstoneText
   }
 
-  get z0() {
-    return this._touchstoneData.z0
+  get options() {
+    return this._touchstoneData.options
   }
 
   constructor(touchstoneText: string) {
@@ -36,10 +40,12 @@ class Network {
     const z0 = 50
 
     return {
-      freqUnit,
-      paramType,
-      format,
-      z0,
+      options: {
+        freqUnit,
+        paramType,
+        format,
+        z0
+      },
       data: []
     }
   }
