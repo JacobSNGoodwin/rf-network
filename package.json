@@ -16,5 +16,6 @@
     "babel-jest": "^24.7.1",
     "jest": "^24.7.1",
     "typescript": "^3.4.1"
-  }
+  },
+  "dependencies": {}
 }
