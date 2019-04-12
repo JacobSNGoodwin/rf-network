@@ -39,6 +39,10 @@ class Network {
     return this._nPorts
   }
 
+  set setName(newName: string) {
+    this._name = newName
+  }
+
   constructor(touchstoneText: string, fileName: string) {
     this._touchstoneText = touchstoneText
     this._networkData = this.parseTouchstoneText(touchstoneText)
