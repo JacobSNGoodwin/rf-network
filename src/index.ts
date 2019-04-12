@@ -1,7 +1,3 @@
-interface TouchstoneData {
-  data: Array<FreqPoint> | null
-}
-
 interface Options {
   freqUnit: string
   paramType: string
@@ -14,7 +10,10 @@ interface FreqPoint {
   s: Array<number> // may change to mathjs matrix
 }
 
-type RFNetwork = TouchstoneData & Options
+interface RFNetwork {
+  data: Array<FreqPoint>
+  options: Options
+}
 
 class Network {
   private _touchstoneText: string
@@ -35,8 +34,12 @@ class Network {
     return this._fileName
   }
 
-  get network() {
-    return this._networkData
+  get data() {
+    return this._networkData.data
+  }
+
+  get options() {
+    return this._networkData.options
   }
 
   get nPorts() {
@@ -102,10 +105,9 @@ class Network {
     const options = this.parseOptions(textArray[optionsIndex])
     const data = this.parseData(textArray.slice(dataIndex))
 
-    // return final object of type RFNetwork, need to spread inner data to do so
     return {
       data,
-      ...options
+      options
     }
   }
 
@@ -185,7 +187,7 @@ class Network {
         break
       }
       const freq = +(<string>singleFreq.shift())
-      console.log(singleFreq)
+
       data.push({
         freq,
         s: []

@@ -14,37 +14,37 @@ beforeAll(async () => {
   s4p = await readFileAsync(path.join(__dirname, 'testFiles', 'example1.s4p'))
 })
 
-describe.skip('Properly loads options for example files', () => {
+describe('Properly loads options for example files', () => {
   test('s1p file', () => {
-    const network = new Network(s1p)
+    const network = new Network(s1p, 'example1.s1p')
     expect(network.options.freqUnit).toBe('HZ')
     expect(network.options.paramType).toBe('S')
     expect(network.options.format).toBe('DB')
     expect(network.options.z0).toBe(50)
   })
   test('s2p file', () => {
-    const network = new Network(s2p)
+    const network = new Network(s2p, 'example1.s2p')
     expect(network.options.freqUnit).toBe('HZ')
     expect(network.options.paramType).toBe('S')
     expect(network.options.format).toBe('DB')
     expect(network.options.z0).toBe(50)
   })
   test('s2p file - 3', () => {
-    const network = new Network(s2p_3)
+    const network = new Network(s2p_3, 'example3.s2p')
     expect(network.options.freqUnit).toBe('MHZ')
     expect(network.options.paramType).toBe('S')
     expect(network.options.format).toBe('DB')
     expect(network.options.z0).toBe(50)
   })
   test('s3p file', () => {
-    const network = new Network(s3p)
+    const network = new Network(s3p, 'example1.s3p')
     expect(network.options.freqUnit).toBe('HZ')
     expect(network.options.paramType).toBe('S')
     expect(network.options.format).toBe('DB')
     expect(network.options.z0).toBe(50)
   })
   test('s4p file', () => {
-    const network = new Network(s4p)
+    const network = new Network(s4p, 'example1.s4p')
     expect(network.options.freqUnit).toBe('HZ')
     expect(network.options.paramType).toBe('S')
     expect(network.options.format).toBe('RI')
@@ -52,7 +52,7 @@ describe.skip('Properly loads options for example files', () => {
   })
 })
 
-describe('Properly handles default options cases', () => {
+describe.skip('Properly handles default options cases', () => {
   test('Returns error if no comment line', () => {
     expect(() => {
       new Network(noOptions)
