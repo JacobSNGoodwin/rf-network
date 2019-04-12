@@ -1,6 +1,6 @@
 import path from 'path'
 
-import { Network } from '../dist/index'
+import Network from '../dist/index'
 import readFileAsync from './util/readFileAsync'
 
 let s1p_1, s1p_2, s2p_1, s2p_2, s2p_3, s3p_1, s4p_1
@@ -18,10 +18,9 @@ beforeAll(async () => {
 describe('Properly loads options for example files', () => {
   test('s1p file', () => {
     const network = new Network(s1p_1)
-    expexct(true).toBeTruthy()
-    // expect(network.options.freqUnit).toBe('GHz')
-    // expect(network.options.paramType).toBe('S')
-    // expect(network.options.format).toBe('MA')
-    // expect(network.options.z0).toBe(50)
+    expect(network.options.freqUnit).toBe('HZ')
+    expect(network.options.paramType).toBe('S')
+    expect(network.options.format).toBe('DB')
+    expect(network.options.z0).toBe(50)
   })
 })

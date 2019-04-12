@@ -34,7 +34,7 @@ class Network {
 
   private parseTouchstoneText(text: string): TouchstoneData {
     // default options
-    const freqUnit = 'GHz'
+    const freqUnit = 'GHZ'
     const paramType = 'S'
     const format = 'MA'
     const z0 = 50
