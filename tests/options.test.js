@@ -52,21 +52,21 @@ describe('Properly loads options for example files', () => {
   })
 })
 
-describe.skip('Properly handles default options cases', () => {
+describe('Properly handles default options cases', () => {
   test('Returns error if no comment line', () => {
     expect(() => {
-      new Network(noOptions)
+      new Network(noOptions, 'dummy.s1p')
     }).toThrowError(new Error('Could not parse options index'))
   })
   test('Returns default on line with only #', () => {
-    const network = new Network(emptyOptions)
+    const network = new Network(emptyOptions, 'dummy.s1p')
     expect(network.options.freqUnit).toBe('GHZ')
     expect(network.options.paramType).toBe('S')
     expect(network.options.format).toBe('MA')
     expect(network.options.z0).toBe(50)
   })
   test('Works with less common options', () => {
-    const network = new Network(uncommonOptions)
+    const network = new Network(uncommonOptions, 'dummy.s1p')
     expect(network.options.freqUnit).toBe('KHZ')
     expect(network.options.paramType).toBe('G')
     expect(network.options.format).toBe('RI')

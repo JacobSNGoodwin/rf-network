@@ -146,9 +146,9 @@ class Network {
         option === 'G'
       ) {
         options.paramType = <string>optionsArray.shift()
-        if (options.paramType !== 'S') {
-          throw new Error('Currently only S-parameters are supported')
-        }
+        // if (options.paramType !== 'S') {
+        //   throw new Error('Currently only S-parameters are supported')
+        // }
       } else if (option === 'DB' || option === 'MA' || option === 'RI') {
         options.format = <string>optionsArray.shift()
       } else if (option === 'R') {
