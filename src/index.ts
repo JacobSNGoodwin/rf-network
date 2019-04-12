@@ -19,16 +19,20 @@ type RFNetwork = TouchstoneData & Options
 class Network {
   private _touchstoneText: string
   private _networkData: RFNetwork
-  private _name: string
-  private _fileType: string
+  private _fileName: string
+  private _label: string
   private _nPorts: number
 
   get touchstoneText() {
     return this._touchstoneText
   }
 
-  get name() {
-    return this._name
+  get label() {
+    return this._label
+  }
+
+  get fileName() {
+    return this._fileName
   }
 
   get network() {
@@ -39,20 +43,19 @@ class Network {
     return this._nPorts
   }
 
-  set setName(newName: string) {
-    this._name = newName
+  set setLabel(newLabel: string) {
+    this._label = newLabel
   }
 
   constructor(touchstoneText: string, fileName: string) {
     this._touchstoneText = touchstoneText
-    this._networkData = this.parseTouchstoneText(touchstoneText)
-    this._name = fileName
+    this._label = fileName
+    this._fileName = fileName
 
     const fileType = fileName.split('.').pop()
     if (!fileType) {
       throw new Error('Could not determine file type or number of ports')
     }
-    this._fileType = fileType
 
     const matchArray = fileType.match(/\d+/g)
     if (!matchArray) {
@@ -60,11 +63,11 @@ class Network {
     }
 
     this._nPorts = +matchArray[0]
+
+    this._networkData = this.parseTouchstoneText(touchstoneText)
   }
 
   private parseTouchstoneText(text: string): RFNetwork {
-    let nPorts = null
-
     // get text line-by-line
     const textArray = text.split('\n')
 
@@ -158,26 +161,18 @@ class Network {
   }
 
   private parseData(dataLines: string[]): Array<FreqPoint> {
-    const line1 = dataLines[0].trim()
-    const line2 = dataLines[2].trim()
-    // split by any number of white space
-    const splitter = new RegExp('\\s+')
-    const length1 = line1.split(splitter).length
-    const length2 = line2.split(splitter).length
+    // number of data lines per frequency
+    let linesPerFreq = 1 // for 1 or two ports
 
-    // compute number of ports from above-computed column lengths
-    let nPorts: number
-    if (length1 === 9 && length2 === 9) {
-      // because touchstone spec is annoying for two ports
-      nPorts = 2
-    } else {
-      nPorts = (length1 - 1) / 2
+    if (this.nPorts > 2) {
+      // need to make this computation as only data for 4 parameters can be handled per line
+      linesPerFreq = this.nPorts * Math.ceil(this.nPorts / 4)
     }
 
-    // number of data lines per frequency
-    const linesPerFreq = nPorts === 2 ? 1 : nPorts
     let data: Array<FreqPoint> = []
 
+    // split by any number of white space
+    const splitter = new RegExp('\\s+')
     while (dataLines.length >= linesPerFreq) {
       const singleFreq = dataLines
         .splice(0, linesPerFreq)
@@ -185,12 +180,12 @@ class Network {
         .trim()
         .split(splitter)
 
-      if (!singleFreq || singleFreq.length < 2 * nPorts * nPorts) {
+      if (!singleFreq || singleFreq.length < 2 * this.nPorts * this.nPorts) {
         // end parsing if we have any line without full data
         break
       }
       const freq = +(<string>singleFreq.shift())
-      // console.log(singleFreq)
+      console.log(singleFreq)
       data.push({
         freq,
         s: []
