@@ -1,7 +1,4 @@
-import math from 'mathjs'
-
 interface TouchstoneData {
-  nPorts: number | null
   data: Array<FreqPoint> | null
 }
 
@@ -22,18 +19,43 @@ type RFNetwork = TouchstoneData & Options
 class Network {
   private _touchstoneText: string
   private _networkData: RFNetwork
+  private _name: string
+  private _fileType: string
+  private _nPorts: number
 
   get touchstoneText() {
     return this._touchstoneText
   }
 
-  // get options() {
-  //   return this._touchstoneData.options
-  // }
+  get name() {
+    return this._name
+  }
 
-  constructor(touchstoneText: string) {
+  get network() {
+    return this._networkData
+  }
+
+  get nPorts() {
+    return this._nPorts
+  }
+
+  constructor(touchstoneText: string, fileName: string) {
     this._touchstoneText = touchstoneText
     this._networkData = this.parseTouchstoneText(touchstoneText)
+    this._name = fileName
+
+    const fileType = fileName.split('.').pop()
+    if (!fileType) {
+      throw new Error('Could not determine file type or number of ports')
+    }
+    this._fileType = fileType
+
+    const matchArray = fileType.match(/\d+/g)
+    if (!matchArray) {
+      throw new Error('Could not determine file type or number of ports')
+    }
+
+    this._nPorts = +matchArray[0]
   }
 
   private parseTouchstoneText(text: string): RFNetwork {
@@ -75,7 +97,7 @@ class Network {
 
     // return final object of type RFNetwork, need to spread inner data to do so
     return {
-      ...data,
+      data,
       ...options
     }
   }
@@ -115,6 +137,9 @@ class Network {
         option === 'G'
       ) {
         options.paramType = <string>optionsArray.shift()
+        if (options.paramType !== 'S') {
+          throw new Error('Currently only S-parameters are supported')
+        }
       } else if (option === 'DB' || option === 'MA' || option === 'RI') {
         options.format = <string>optionsArray.shift()
       } else if (option === 'R') {
@@ -128,7 +153,7 @@ class Network {
     return options
   }
 
-  private parseData(dataLines: string[]): TouchstoneData {
+  private parseData(dataLines: string[]): Array<FreqPoint> {
     const line1 = dataLines[0].trim()
     const line2 = dataLines[2].trim()
     // split by any number of white space
@@ -136,6 +161,7 @@ class Network {
     const length1 = line1.split(splitter).length
     const length2 = line2.split(splitter).length
 
+    // compute number of ports from above-computed column lengths
     let nPorts: number
     if (length1 === 9 && length2 === 9) {
       // because touchstone spec is annoying for two ports
@@ -144,12 +170,30 @@ class Network {
       nPorts = (length1 - 1) / 2
     }
 
-    console.log(nPorts)
-    // temporary return value
-    return {
-      nPorts,
-      data: [{ freq: 500, s: [] }]
+    // number of data lines per frequency
+    const linesPerFreq = nPorts === 2 ? 1 : nPorts
+    let data: Array<FreqPoint> = []
+
+    while (dataLines.length >= linesPerFreq) {
+      const singleFreq = dataLines
+        .splice(0, linesPerFreq)
+        .join(' ')
+        .trim()
+        .split(splitter)
+
+      if (!singleFreq || singleFreq.length < 2 * nPorts * nPorts) {
+        // end parsing if we have any line without full data
+        break
+      }
+      const freq = +(<string>singleFreq.shift())
+      // console.log(singleFreq)
+      data.push({
+        freq,
+        s: []
+      })
     }
+
+    return data
   }
 }
 
