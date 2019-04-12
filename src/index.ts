@@ -1,8 +1,14 @@
 interface TouchstoneData {
-  // freqUnit: string
-  // paramType: string
-  // format: string
-  Z0: number
+  freqUnit: string
+  paramType: string
+  format: string
+  z0: number
+  data: Array<SParamData>
+}
+
+interface SParamData {
+  freq: number,
+  data: Array<number>
 }
 
 class Network {
@@ -13,8 +19,8 @@ class Network {
     return this._touchstoneText
   }
 
-  get refImpedance() {
-    return this._touchstoneData.Z0
+  get z0() {
+    return this._touchstoneData.z0
   }
 
   constructor(touchstoneText: string) {
@@ -23,8 +29,18 @@ class Network {
   }
 
   private parseTouchstoneText(text: string): TouchstoneData {
+    // default options
+    const freqUnit = 'GHz'
+    const paramType = 'S'
+    const format = 'MA'
+    const z0 = 50
+
     return {
-      Z0: 50
+      freqUnit,
+      paramType,
+      format,
+      z0,
+      data: []
     }
   }
 }
