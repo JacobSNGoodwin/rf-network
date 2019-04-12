@@ -34,11 +34,6 @@ class Network {
   }
 
   private parseTouchstoneText(text: string): TouchstoneData {
-    // default options
-    let freqUnit = 'GHz'
-    let paramType = 'S'
-    let format = 'MA'
-    let z0 = 50
     let data = null
     let nPorts = null
 
@@ -73,16 +68,61 @@ class Network {
       throw new Error('Could not parse S-parameter data')
     }
 
+    const options = this.parseOptions(textArray[optionsIndex])
+
     return {
       nPorts,
-      options: {
-        freqUnit,
-        paramType,
-        format,
-        z0
-      },
+      options,
       data
     }
+  }
+
+  // gets the options from the options line
+  private parseOptions(optionsLine: string): Options {
+    const options: Options = {
+      freqUnit: 'GHZ',
+      paramType: 'S',
+      format: 'MA',
+      z0: 50
+    }
+
+    // split tokens and trim whitespace
+    const optionsArray = optionsLine
+      .trim()
+      .toUpperCase()
+      .split(/\s+/)
+
+    while (optionsArray.length > 0) {
+      // shift elements out of array as they're found
+      const option = optionsArray[0]
+      if (option === '#') {
+        optionsArray.shift()
+      } else if (
+        option === 'GHZ' ||
+        option === 'MHZ' ||
+        option === 'KHZ' ||
+        option === 'HZ'
+      ) {
+        options.freqUnit = <string>optionsArray.shift()
+      } else if (
+        option === 'S' ||
+        option === 'Y' ||
+        option === 'Z' ||
+        option === 'H' ||
+        option === 'G'
+      ) {
+        options.paramType = <string>optionsArray.shift()
+      } else if (option === 'DB' || option === 'MA' || option === 'RI') {
+        options.format = <string>optionsArray.shift()
+      } else if (option === 'R') {
+        optionsArray.shift()
+        options.z0 = +(<string>optionsArray.shift())
+      } else {
+        optionsArray.shift()
+      }
+    }
+
+    return options
   }
 }
 
