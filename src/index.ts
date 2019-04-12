@@ -7,7 +7,7 @@ interface TouchstoneData {
 }
 
 interface SParamData {
-  freq: number,
+  freq: number
   data: Array<number>
 }
 
