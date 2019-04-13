@@ -1,9 +1,10 @@
 import math from 'mathjs'
+import { Function, optionalCallExpression } from '@babel/types'
 
 interface Options {
   freqUnit: string
   paramType: string
-  format: string
+  importFormat: string
   z0: number
 }
 
@@ -117,7 +118,7 @@ class Network {
     const options: Options = {
       freqUnit: 'GHZ',
       paramType: 'S',
-      format: 'MA',
+      importFormat: 'MA',
       z0: 50
     }
 
@@ -151,7 +152,7 @@ class Network {
         //   throw new Error('Currently only S-parameters are supported')
         // }
       } else if (option === 'DB' || option === 'MA' || option === 'RI') {
-        options.format = <string>optionsArray.shift()
+        options.importFormat = <string>optionsArray.shift()
       } else if (option === 'R') {
         optionsArray.shift()
         options.z0 = +(<string>optionsArray.shift())
@@ -176,6 +177,23 @@ class Network {
 
     // split by any number of white space
     const splitter = new RegExp('\\s+')
+
+    // create a function to map data to complex dataType of real and imaginary
+    let toComplex = (term1: number, term2: number): math.Complex => {
+      if (this.options.importFormat === 'MA') {
+        const angle = (term2 * Math.PI) / 180
+        return math.complex(<math.PolarCoordinates>{ r: term1, phi: angle })
+      } else if (this.options.importFormat === 'DB') {
+        const linMag = Math.pow(10, term1 / 20)
+        const angle = (term2 * Math.PI) / 180
+        return math.complex(<math.PolarCoordinates>{ r: linMag, phi: angle })
+      } else if (this.options.importFormat === 'RI') {
+        return math.complex(<math.Complex>{ re: term1, im: term2 })
+      } else {
+        throw new Error('Unknown data format type.')
+      }
+    }
+
     while (dataLines.length >= linesPerFreq) {
       const singleFreq = dataLines
         .splice(0, linesPerFreq)
@@ -189,14 +207,16 @@ class Network {
       }
       const freq = +(<string>singleFreq.shift())
       let s = <math.Matrix>math.zeros(this.nPorts, this.nPorts)
-
-      for (let i = 0; i < s.size()[0]; i++) {
-        for (let j = 0; j < s.size()[1]; j++) {
-          s.subset(math.index(i, j), { a: singleFreq[i], b: singleFreq[j] })
-        }
+      // remember that for n = 2, the its [[S11, S21], [S12, S22]]
+      if (this.nPorts === 1) {
+        s.subset(math.index(0, 0), { a: singleFreq[0], b: singleFreq[1] })
       }
 
-      console.log(s)
+      // for (let i = 0; i < s.size()[0]; i++) {
+      //   for (let j = 0; j < s.size()[1]; j++) {
+      //     s.subset(math.index(i, j), { a: singleFreq[i], b: singleFreq[j] })
+      //   }
+      // }
 
       data.push({
         freq,
