@@ -15,7 +15,7 @@ interface FreqPoint {
 
 interface RFNetwork {
   data: Array<FreqPoint>
-  options: Options
+  // options: Options
 }
 
 class Network {
@@ -24,6 +24,7 @@ class Network {
   private _fileName: string
   private _label: string
   private _nPorts: number
+  private _options: Options
 
   get touchstoneText() {
     return this._touchstoneText
@@ -42,7 +43,7 @@ class Network {
   }
 
   get options() {
-    return this._networkData.options
+    return this._options
   }
 
   get nPorts() {
@@ -69,6 +70,12 @@ class Network {
     }
 
     this._nPorts = +matchArray[0]
+    this._options = {
+      freqUnit: 'GHZ',
+      paramType: 'S',
+      importFormat: 'MA',
+      z0: 50
+    }
     this._networkData = this.parseTouchstoneText(touchstoneText)
   }
 
@@ -105,11 +112,12 @@ class Network {
     }
 
     const options = this.parseOptions(textArray[optionsIndex])
+    this._options = options
     const data = this.parseData(textArray.slice(dataIndex))
 
     return {
-      data,
-      options
+      data
+      // options
     }
   }
 
@@ -179,7 +187,7 @@ class Network {
     const splitter = new RegExp('\\s+')
 
     // create a function to map data to complex dataType of real and imaginary
-    let toComplex = (term1: number, term2: number): math.Complex => {
+    const toComplex = (term1: number, term2: number): math.Complex => {
       if (this.options.importFormat === 'MA') {
         const angle = (term2 * Math.PI) / 180
         return math.complex(<math.PolarCoordinates>{ r: term1, phi: angle })
@@ -209,7 +217,7 @@ class Network {
       let s = <math.Matrix>math.zeros(this.nPorts, this.nPorts)
       // remember that for n = 2, the its [[S11, S21], [S12, S22]]
       if (this.nPorts === 1) {
-        s.subset(math.index(0, 0), { a: singleFreq[0], b: singleFreq[1] })
+        s.subset(math.index(0, 0), toComplex(+singleFreq[0], +singleFreq[1]))
       }
 
       // for (let i = 0; i < s.size()[0]; i++) {
@@ -217,6 +225,8 @@ class Network {
       //     s.subset(math.index(i, j), { a: singleFreq[i], b: singleFreq[j] })
       //   }
       // }
+
+      console.log(s.toString())
 
       data.push({
         freq,
