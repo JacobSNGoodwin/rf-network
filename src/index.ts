@@ -1,3 +1,5 @@
+import math from 'mathjs'
+
 interface Options {
   freqUnit: string
   paramType: string
@@ -7,7 +9,7 @@ interface Options {
 
 interface FreqPoint {
   freq: number
-  s: Array<number> // may change to mathjs matrix
+  s: math.Matrix
 }
 
 interface RFNetwork {
@@ -66,7 +68,6 @@ class Network {
     }
 
     this._nPorts = +matchArray[0]
-
     this._networkData = this.parseTouchstoneText(touchstoneText)
   }
 
@@ -187,10 +188,19 @@ class Network {
         break
       }
       const freq = +(<string>singleFreq.shift())
+      let s = <math.Matrix>math.zeros(this.nPorts, this.nPorts)
+
+      for (let i = 0; i < s.size()[0]; i++) {
+        for (let j = 0; j < s.size()[1]; j++) {
+          s.subset(math.index(i, j), { a: singleFreq[i], b: singleFreq[j] })
+        }
+      }
+
+      console.log(s)
 
       data.push({
         freq,
-        s: []
+        s
       })
     }
 

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",
-    "test": "jest --watch"
+    "test": "jest --watch",
+    "play": "jest temp.test.js"
   },
   "author": "Jacob Goodwin",
   "license": "ISC",
