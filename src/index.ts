@@ -1,5 +1,3 @@
-import math from 'mathjs'
-
 import { Options, FreqPoint } from './interfaces'
 
 import optionsFromText from './util/optionsFromText'
@@ -11,7 +9,10 @@ class Network {
   private _fileName: string
   private _label: string
   private _nPorts: number
-  private _options: Options
+  private _importOptions: Options
+  private _freqUnit: string
+  private _paramType: string
+  private _z0: number
 
   get touchstoneText() {
     return this._touchstoneText
@@ -29,12 +30,20 @@ class Network {
     return this._networkData
   }
 
-  get options() {
-    return this._options
-  }
-
   get nPorts() {
     return this._nPorts
+  }
+
+  get freqUnit() {
+    return this._freqUnit
+  }
+
+  get paramType() {
+    return this._paramType
+  }
+
+  get z0() {
+    return this._z0
   }
 
   set setLabel(newLabel: string) {
@@ -57,12 +66,18 @@ class Network {
     }
 
     this._nPorts = +matchArray[0]
-    this._options = {
-      freqUnit: 'GHZ',
+
+    // default parameter types
+    this._importOptions = {
+      freqUnit: 'GHz',
       paramType: 'S',
       importFormat: 'MA',
       z0: 50
     }
+    this._freqUnit = 'GHz'
+    this._paramType = 'S'
+    this._z0 = 50
+
     this._networkData = this.parseTouchstoneText(touchstoneText)
   }
 
@@ -98,7 +113,12 @@ class Network {
       throw new Error('Could not parse S-parameter data')
     }
 
-    this._options = this.parseOptions(textArray[optionsIndex])
+    this._importOptions = this.parseOptions(textArray[optionsIndex])
+
+    this._freqUnit = this._importOptions.freqUnit
+    this._paramType = this._importOptions.paramType
+    this._z0 = this._importOptions.z0
+
     const data = this.parseData(textArray.slice(dataIndex))
 
     return data
@@ -107,7 +127,7 @@ class Network {
   // gets the options from the options line
   private parseOptions = (textLine: string) => optionsFromText(textLine)
   private parseData = (dataLines: string[]) =>
-    dataFromTextLines(dataLines, this.options, this.nPorts)
+    dataFromTextLines(dataLines, this._importOptions, this.nPorts)
 }
 
 export { Network as default }
