@@ -49,18 +49,31 @@ export default function dataFromTextLines(
     }
     const freq = +(<string>singleFreq.shift())
 
-    let s: math.Complex[][] = [[]]
+    let s: math.Complex[][] = new Array(nPorts)
+
+    for (let i = 0; i < s.length; i++) {
+      s[i] = new Array(nPorts)
+    }
 
     // let s = <math.Matrix>math.zeros(nPorts, nPorts)
     // remember that for n = 2, the its [[S11, S21], [S12, S22]]
     if (nPorts === 1) {
       s[0][0] = toComplex(+singleFreq[0], +singleFreq[1])
+    } else if (nPorts === 2) {
+      s[0][0] = toComplex(+singleFreq[0], +singleFreq[1])
+      s[0][1] = toComplex(+singleFreq[4], +singleFreq[5])
+      s[1][0] = toComplex(+singleFreq[2], +singleFreq[3])
+      s[1][1] = toComplex(+singleFreq[6], +singleFreq[7])
+    } else {
+      for (let i = 0; i < nPorts; i++) {
+        for (let j = 0; j < nPorts; j++) {
+          s[i][j] = toComplex(
+            +singleFreq[2 * (3 * i + j)],
+            +singleFreq[2 * (3 * i + j) + 1]
+          )
+        }
+      }
     }
-
-    // for (let i = 0; i < s.size()[0]; i++) {
-    //   for (let j = 0; j < s.size()[1]; j++) {
-    //   }
-    // }
 
     data.push({
       freq,
