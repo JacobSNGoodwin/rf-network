@@ -7,7 +7,7 @@ interface Options {
 
 interface FreqPoint {
   freq: number
-  s: math.Matrix
+  s: math.Complex[][]
 }
 
 export { Options, FreqPoint }

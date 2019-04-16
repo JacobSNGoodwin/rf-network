@@ -16,5 +16,6 @@ beforeAll(async () => {
 describe('It is just for playing around', () => {
   test('It creates a network', () => {
     const network = new Network(s1p, 'dummy.s1p')
+    console.log(network.data[0].s[0][0])
   })
 })
