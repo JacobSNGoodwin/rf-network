@@ -9,8 +9,12 @@
     "test": "jest --watch",
     "play": "jest temp.test.js"
   },
-  "author": "Jacob Goodwin",
-  "license": "ISC",
+  "author": "Jacob Goodwin <jacob.goodwin@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Maxbrain0/rf-network"
+  },
   "devDependencies": {
     "@babel/core": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
