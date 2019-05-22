@@ -1,3 +1,5 @@
+import math from 'mathjs'
+
 interface Options {
   freqUnit: string
   paramType: string
@@ -5,9 +7,9 @@ interface Options {
   z0: number
 }
 
-interface FreqPoint {
-  freq: number
-  s: math.Complex[][]
+interface NetworkData {
+  freq: number[]
+  s: math.Complex[][][]
 }
 
-export { Options, FreqPoint }
+export { Options, NetworkData }
