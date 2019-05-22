@@ -1,11 +1,11 @@
-import { Options, FreqPoint } from './interfaces'
+import { Options, NetworkData } from './interfaces'
 
 import optionsFromText from './util/optionsFromText'
 import dataFromTextLines from './util/dataFromTextLines'
 
 class Network {
   private _touchstoneText: string
-  private _networkData: FreqPoint[]
+  private _networkData: NetworkData
   private _fileName: string
   private _label: string
   private _nPorts: number
@@ -81,7 +81,7 @@ class Network {
     this._networkData = this.parseTouchstoneText(touchstoneText)
   }
 
-  private parseTouchstoneText(text: string): FreqPoint[] {
+  private parseTouchstoneText(text: string): NetworkData {
     // get text line-by-line
     const textArray = text.split('\n')
 

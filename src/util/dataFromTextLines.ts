@@ -1,12 +1,12 @@
 import math from 'mathjs'
 
-import { FreqPoint, Options } from '../interfaces'
+import { NetworkData, Options } from '../interfaces'
 
 export default function dataFromTextLines(
   dataLines: string[],
   options: Options,
   nPorts: number
-): FreqPoint[] {
+): NetworkData {
   // number of data lines per frequency
   let linesPerFreq = 1 // for 1 or two ports
 
@@ -15,7 +15,18 @@ export default function dataFromTextLines(
     linesPerFreq = nPorts * Math.ceil(nPorts / 4)
   }
 
-  let data: Array<FreqPoint> = []
+  let data: NetworkData = {
+    freq: [],
+    s: new Array(nPorts)
+  }
+
+  // initialize the data array
+  for (let i = 0; i < data.s.length; i++) {
+    data.s[i] = new Array(nPorts)
+    for (let j = 0; j < data.s[i].length; j++) {
+      data.s[i][j] = new Array()
+    }
+  }
 
   // split by any number of white space
   const splitter = new RegExp('\\s+')
@@ -47,38 +58,32 @@ export default function dataFromTextLines(
       // end parsing if we have any line without full data
       break
     }
+
+    // get the frequencyfrom data line
     const freq = +(<string>singleFreq.shift())
-
-    let s: math.Complex[][] = new Array(nPorts)
-
-    for (let i = 0; i < s.length; i++) {
-      s[i] = new Array(nPorts)
-    }
+    data.freq.push(freq)
 
     // let s = <math.Matrix>math.zeros(nPorts, nPorts)
     // remember that for n = 2, the its [[S11, S21], [S12, S22]]
     if (nPorts === 1) {
-      s[0][0] = toComplex(+singleFreq[0], +singleFreq[1])
+      data.s[0][0].push(toComplex(+singleFreq[0], +singleFreq[1]))
     } else if (nPorts === 2) {
-      s[0][0] = toComplex(+singleFreq[0], +singleFreq[1])
-      s[0][1] = toComplex(+singleFreq[4], +singleFreq[5])
-      s[1][0] = toComplex(+singleFreq[2], +singleFreq[3])
-      s[1][1] = toComplex(+singleFreq[6], +singleFreq[7])
+      data.s[0][0].push(toComplex(+singleFreq[0], +singleFreq[1]))
+      data.s[0][1].push(toComplex(+singleFreq[4], +singleFreq[5]))
+      data.s[1][0].push(toComplex(+singleFreq[2], +singleFreq[3]))
+      data.s[1][1].push(toComplex(+singleFreq[6], +singleFreq[7]))
     } else {
       for (let i = 0; i < nPorts; i++) {
         for (let j = 0; j < nPorts; j++) {
-          s[i][j] = toComplex(
-            +singleFreq[2 * (3 * i + j)],
-            +singleFreq[2 * (3 * i + j) + 1]
+          data.s[i][j].push(
+            toComplex(
+              +singleFreq[2 * (3 * i + j)],
+              +singleFreq[2 * (3 * i + j) + 1]
+            )
           )
         }
       }
     }
-
-    data.push({
-      freq,
-      s
-    })
   }
 
   return data
