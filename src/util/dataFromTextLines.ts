@@ -23,6 +23,28 @@ export default function dataFromTextLines(
   // initialize the data array
   for (let i = 0; i < data.s.length; i++) {
     data.s[i] = new Array(nPorts)
+    for (let j = 0; j < data.s[i].length; j++) {
+      data.s[i][j] = {
+        sRe: [],
+        sReMax: null,
+        sReMin: null,
+        sIm: [],
+        sImMax: null,
+        sImMin: null,
+        sMag: [],
+        sMagMax: null,
+        sMagMin: null,
+        sDb: [],
+        sDbMax: null,
+        sDbMin: null,
+        sAngle: [],
+        sAngleMax: null,
+        sAngleMin: null,
+        sDeg: [],
+        sDegMax: null,
+        sDegMin: null
+      }
+    }
   }
 
   // split by any number of white space
@@ -254,23 +276,18 @@ export default function dataFromTextLines(
   return data
 }
 
-// computes the max of two terms. If a term is undefined/falsy, returns the other term
-const getMax = (term1: number, term2: number): number => {
+// computes the max of two terms. If a term1 is null, returns term2
+const getMax = (term1: number | null, term2: number): number => {
   if (!term1) {
     return term2
-  }
-  if (!term2) {
-    return term1
   }
   return Math.max(term1, term2)
 }
-// computes the min of two terms. If a term is undefined/falsy, returns the other term
-const getMin = (term1: number, term2: number): number => {
+
+//computes the min of two terms. If a term1 is null, returns term2
+const getMin = (term1: number | null, term2: number): number => {
   if (!term1) {
     return term2
-  }
-  if (!term2) {
-    return term1
   }
   return Math.min(term1, term2)
 }
