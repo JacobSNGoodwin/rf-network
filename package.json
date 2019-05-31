@@ -1,6 +1,6 @@
 {
   "name": "rf-network",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Classes and functions for handling RF/Microwave data from touchstone files",
   "main": "dist/index.js",
   "scripts": {
