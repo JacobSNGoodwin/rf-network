@@ -16,8 +16,13 @@ beforeAll(async () => {
 })
 
 describe('Creates S-parameter data', () => {
-  test('prints out network data for kicks and giggles', () => {
+  test.skip('prints out network data for kicks and giggles', () => {
     console.log(network1.data.freq)
-    console.log(network1.data.s[0][0])
+    console.log(network1.data.s[0][0].sRe)
+    console.log(network1.data.s[0][0].sIm)
+    console.log(network1.data.s[0][0].sMag)
+    console.log(network1.data.s[0][0].sDb)
+    console.log(network1.data.s[0][0].sAngle)
+    console.log(network1.data.s[0][0].sDeg)
   })
 })
