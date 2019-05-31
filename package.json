@@ -1,12 +1,14 @@
 {
   "name": "rf-network",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Classes and functions for handling RF/Microwave data from touchstone files",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",
     "test": "jest --watch",
+    "test:data": "jest data.test.js",
+    "test:options": "jest options.test.js",
     "play": "jest temp.test.js"
   },
   "author": "Jacob Goodwin <jacob.goodwin@gmail.com>",
