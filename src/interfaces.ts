@@ -21,23 +21,23 @@ interface AllS {
 
 interface SData {
   sRe: number[]
-  sReMin: number
-  sReMax: number
+  sReMin: number | null
+  sReMax: number | null
   sIm: number[]
-  sImMin: number
-  sImMax: number
+  sImMin: number | null
+  sImMax: number | null
   sMag: number[]
-  sMagMin: number
-  sMagMax: number
+  sMagMin: number | null
+  sMagMax: number | null
   sDb: number[]
-  sDbMin: number
-  sDbMax: number
+  sDbMin: number | null
+  sDbMax: number | null
   sAngle: number[]
-  sAngleMin: number
-  sAngleMax: number
+  sAngleMin: number | null
+  sAngleMax: number | null
   sDeg: number[]
-  sDegMin: number
-  sDegMax: number
+  sDegMin: number | null
+  sDegMax: number | null
 }
 
 export { Options, NetworkData, AllS, SData }
