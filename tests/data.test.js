@@ -80,4 +80,19 @@ describe('Creates correct s-parameter data from touchstone file', () => {
     // -4.7540789 -68.356712 -21.906563 -19.079386 -11.333095 49.025524
     expect(network3.data.freq[199]).toBe(20000000000)
   })
+
+  test('It computes minima and maxima of sParameters', () => {
+    expect(network2_2.data.s[1][0].sMagMax).toBeCloseTo(4.388)
+    expect(network2_2.data.s[1][0].sMagMin).toBeCloseTo(0.011)
+    expect(network2_2.data.s[1][0].sDegMax).toBeCloseTo(175.316)
+    expect(network2_2.data.s[1][0].sDegMin).toBeCloseTo(-178.853)
+    expect(network2_2.data.s[1][0].sDbMax).toBeCloseTo(12.8453323780535)
+    expect(network2_2.data.s[1][0].sDbMin).toBeCloseTo(-39.1721462968355)
+    expect(network2_2.data.s[1][0].sAngleMax).toBeCloseTo(3.05984143142638)
+    expect(network2_2.data.s[1][0].sAngleMin).toBeCloseTo(-3.12157372706942)
+    expect(network2_2.data.s[1][0].sReMax).toBeCloseTo(1.35252142775149)
+    expect(network2_2.data.s[1][0].sReMin).toBeCloseTo(-4.25188409466947)
+    expect(network2_2.data.s[1][0].sImMax).toBeCloseTo(3.47601820476135)
+    expect(network2_2.data.s[1][0].sImMin).toBeCloseTo(-1.94650344673083)
+  })
 })
