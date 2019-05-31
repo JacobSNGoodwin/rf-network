@@ -1,6 +1,6 @@
 import math from 'mathjs'
 
-import { NetworkData, Options } from '../interfaces'
+import { NetworkData, Options, SData, AllS } from '../interfaces'
 
 export default function dataFromTextLines(
   dataLines: string[],
